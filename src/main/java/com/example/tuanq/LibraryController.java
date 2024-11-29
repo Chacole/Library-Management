@@ -1,24 +1,22 @@
 package com.example.tuanq;
-
+import com.example.tuanq.handleMainButton.Exit;
+import com.example.tuanq.handleMainButton.Displayusers;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 
 public class LibraryController {
-
-    @FXML
-    private Button exitButton;
-
-
     @FXML
     private VBox contentBox;
 
     // Các phương thức xử lý sự kiện
     @FXML
     private void handleExit() {
-        System.exit(0); // Thoát chương trình
+        Exit exit = new Exit();
+        exit.exitSystem();
     }
 
     @FXML
@@ -48,8 +46,13 @@ public class LibraryController {
 
     @FXML
     private void handleDisplayDocument() {
-        contentBox.getChildren().clear();
-        contentBox.getChildren().add(new Label("Display Document Functionality"));
+        try {
+            Parent documentView = FXMLLoader.load(getClass().getResource("/com/example/tuanq/documents.fxml"));
+            contentBox.getChildren().clear();
+            contentBox.getChildren().add(documentView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -63,7 +66,9 @@ public class LibraryController {
     @FXML
     private void handleBorrowDocument() {
         contentBox.getChildren().clear();
-        contentBox.getChildren().add(new Label("Borrow Document Functionality"));
+
+        DisplayBorrowRecord displayborrowrecord = new DisplayBorrowRecord();
+        contentBox.getChildren().add(displayborrowrecord.createBorrowRecordTable());
     }
 
     @FXML

@@ -17,7 +17,7 @@ public class LibraryApp extends Application {
         Parent root = loader.load();
 
         // Tạo Scene
-        Scene scene = new Scene(root, 1200, 1000);
+        Scene scene = new Scene(root, 1000, 1000);
         primaryStage.setTitle("Library Management System");
         primaryStage.setScene(scene);
         primaryStage.show();

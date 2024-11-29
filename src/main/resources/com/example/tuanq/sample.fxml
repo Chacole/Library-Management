@@ -29,7 +29,7 @@
             <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
-            <Button fx:id="exitButton" maxWidth="Infinity" onAction="#handleExit" text="Exit" textAlignment="CENTER">
+            <Button maxWidth="Infinity" onAction="#handleExit" text="Exit" textAlignment="CENTER">
             <VBox.margin>
                <Insets bottom="10.0" top="25.0" />
             </VBox.margin></Button>

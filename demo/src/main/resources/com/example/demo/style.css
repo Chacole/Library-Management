@@ -1,22 +1,32 @@
 .button {
-    -fx-background-color: linear-gradient(to bottom, #28A745, #218838);
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-padding: 10 20;
-    -fx-border-radius: 15px;
-    -fx-background-radius: 15px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8, 0.5, 2, 2);
-    -fx-transition: all 0.3s ease-in-out;
+    -fx-alignment: center;
+    -fx-background-color: lightgreen;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-border-color: darkgreen;
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+    -fx-effect: dropshadow(gaussian, transparent, 0, 0, 0, 0),
+    dropshadow(gaussian, rgba(18, 18, 18, 0.1), 20, 0.2, 0, 6);
+    -fx-text-fill: #121212;
+    -fx-cursor: hand;
+    -fx-font-size: 1.2rem;
+    -fx-font-weight: 700;
+    -fx-padding: 1rem 1.2rem;
+    -fx-text-alignment: center;
+    -fx-font-family: "Leelawadee UI";
+    -fx-transition: -fx-effect 0.2s;
 }
 
 .button:hover {
-    -fx-background-color: #1E7E34;
-    -fx-scale-x: 1.1;
-    -fx-scale-y: 1.1;
+    -fx-effect: dropshadow(gaussian, #121212, 3, 0, 0, 0),
+    dropshadow(gaussian, transparent, 0, 0, 0, 0);
 }
 
 .button:pressed {
-    -fx-background-color: #155724;
-    -fx-translate-y: 2px;
+    -fx-background-color: #4CAF50;
+    -fx-border-color: #388E3C;
+    -fx-effect: dropshadow(gaussian, rgba(18, 18, 18, 0.3), 3, 0.2, 0, 2),
+    dropshadow(gaussian, rgba(18, 18, 18, 0.2), 5, 0.5, 0, 4);
+    -fx-transform: scale(0.95);
 }

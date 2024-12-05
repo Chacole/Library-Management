@@ -3,10 +3,10 @@ import java.util.*;
 
 public class Users {
     private int ID;
-    private String Name;
-    private String Email;
-    private String Address;
-    private String Phone;
+    protected String Name;
+    protected String Email;
+    protected String Address;
+    protected String Phone;
 
     public Users() {}
 
@@ -60,10 +60,6 @@ public class Users {
     }
     public void setPhone(String phone) {
         this.Phone = phone;
-    }
-
-    public void assignID(ManagementID idManager) {
-        this.setID(idManager.generateUserID());
     }
 
     /**

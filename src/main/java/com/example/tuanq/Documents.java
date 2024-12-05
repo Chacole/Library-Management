@@ -9,7 +9,7 @@ public class Documents {
     protected String Type;
     protected int YearPublished;
     protected int Quantity;
-    private String imagePath;
+    protected String imagePath;
 
     public Documents() {}
 
@@ -84,15 +84,20 @@ public class Documents {
 
     public String getUrl() { return imagePath; }
 
-    public void assignID(ManagementID idManager) {
-        this.setID(idManager.generateDocID());
+    public void updateImageFromApi() {
+        if (this.imagePath == null || this.imagePath.isEmpty() || !this.imagePath.startsWith("http")) {
+            String apiImageUrl = ApiService.getGoogleBookImage(this.Title);
+            if (apiImageUrl != null) {
+                this.imagePath = apiImageUrl;
+            }
+        }
     }
 
     /**
      * print information of documents.
      */
     public void getInfo() {
-        System.out.println("ID: " + ID + "author: " + Author + "title: " + Title
+        System.out.println("ID: " + this.ID + "author: " + Author + "title: " + Title
                 + "type: " + Type + "year: " + YearPublished + "quantity: " + Quantity);
     }
 

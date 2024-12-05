@@ -2,7 +2,6 @@ package com.example.tuanq;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.time.LocalDate;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -23,9 +22,10 @@ public class BorrowRecord {
         this.documentTitle = documentTitle;
         this.borrowDate = borrowDate;
         this.returnDate = returnDate;
+
     }
 
-    // Constructor đầy đủ
+    // Constructor
     public BorrowRecord(String userName, String documentTitle, Date borrowDate, Date returnDate, String image) {
         this.userName = userName;
         this.documentTitle = documentTitle;
@@ -86,9 +86,21 @@ public class BorrowRecord {
     }
 
     public ImageView getImageView() {
-        ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(image)));
-        imageView.setFitWidth(90); // Đặt chiều rộng
-        imageView.setFitHeight(120); // Đặt chiều cao
+        ImageView imageView = null;
+        try {
+            if (image.startsWith("http") || image.startsWith("https")) {
+                // URL từ web
+                imageView = new ImageView(new Image(image, true)); // true: tải ảnh không đồng bộ
+            } else {
+                // Đường dẫn cục bộ
+                imageView = new ImageView(new Image(getClass().getResource(image).toExternalForm()));
+            }
+            imageView.setFitWidth(90); // Đặt chiều rộng
+            imageView.setFitHeight(120); // Đặt chiều cao
+        } catch (Exception e) {
+            System.out.println("Error loading image: " + e.getMessage());
+            imageView = new ImageView(); // Ảnh trống khi lỗi
+        }
         return imageView;
     }
 }

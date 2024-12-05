@@ -1,3 +1,5 @@
+package com.example.tuanq;
+
 //package com.example.tuanq;
 //
 //import javafx.collections.FXCollections;
@@ -220,8 +222,6 @@
 //    }
 //}
 
-package com.example.tuanq;
-
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -229,25 +229,19 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 
-public class Displaydocuments {
+public class DisplaydocumentsResearch {
     private int currentPage = 1;
     private int totalPages; // Tổng số trang sẽ được tính toán
     private final int rowsPerPage = 9; // Số bản ghi mỗi trang
@@ -261,62 +255,14 @@ public class Displaydocuments {
 
     @FXML
     public void initialize() {
-        // Tải dữ liệu từ cơ sở dữ liệu trong một luồng nền
-        Task<ObservableList<Documents>> loadDataTask = new Task<>() {
-            @Override
-            protected ObservableList<Documents> call() throws Exception {
-                return loadDocumentsFromDatabase();
-            }
-        };
-
-        // Xử lý kết quả sau khi dữ liệu được tải xong
-        loadDataTask.setOnSucceeded(event -> {
-            allDocuments = loadDataTask.getValue();
-            calculateTotalPages();
-            listView.setCellFactory(param -> new DocumentCell());
-            updateTableContent(1);
-            updateButtons();
-        });
-
-        // Xử lý lỗi khi có vấn đề trong quá trình tải dữ liệu
-        loadDataTask.setOnFailed(event -> {
-            System.err.println("Failed to load documents: " + loadDataTask.getException().getMessage());
-        });
-
-        // Chạy Task trong một luồng nền
-        Thread backgroundThread = new Thread(loadDataTask);
-        backgroundThread.setDaemon(true);
-        backgroundThread.start();
+        listView.setCellFactory(param -> new DocumentCell());
     }
 
-    public ObservableList<Documents> loadDocumentsFromDatabase() {
-        ObservableList<Documents> documents = FXCollections.observableArrayList();
-        String query = "SELECT * FROM Documents";
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
-
-            while (resultSet.next()) {
-                Documents document = new Documents(
-                        resultSet.getString("Author"),
-                        resultSet.getString("Title"),
-                        resultSet.getString("Type"),
-                        resultSet.getInt("Year"),
-                        resultSet.getInt("Quantity"),
-                        resultSet.getString("ImagePath")
-                );
-                document.setID(resultSet.getInt("ID"));
-
-                document.updateImageFromApi();
-
-                documents.add(document);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return documents;
+    public void setDocuments(ArrayList<Documents> documents) {
+        allDocuments = FXCollections.observableArrayList(documents); // Chuyển đổi sang ObservableList
+        calculateTotalPages(); // Tính lại tổng số trang
+        updateTableContent(1); // Hiển thị nội dung trang đầu tiên
+        updateButtons(); // Cập nhật nút phân trang
     }
 
     private void calculateTotalPages() {
@@ -426,28 +372,14 @@ public class Displaydocuments {
                 imageView.setFitHeight(120);
 
                 VBox vBox = new VBox(5);
-
+                Text ID = new Text("ID: " + document.getID());
                 Text author = new Text("Author: " + document.getAuthor());
-                author.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-                author.setFill(javafx.scene.paint.Color.DARKBLUE);
-
                 Text title = new Text("Title: " + document.getTitle());
-                title.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
-                title.setFill(javafx.scene.paint.Color.BLACK);
-
                 Text type = new Text("Type: " + document.getType());
-                type.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
-                type.setFill(javafx.scene.paint.Color.BLACK);
-
                 Text year = new Text("Year: " + document.getYear());
-                year.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
-                year.setFill(javafx.scene.paint.Color.BLACK);
-
                 Text quantity = new Text("Quantity: " + document.getQuantity());
-                quantity.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
-                quantity.setFill(javafx.scene.paint.Color.BLACK);
 
-                vBox.getChildren().addAll(author, title, type, year, quantity);
+                vBox.getChildren().addAll(ID, author, title, type, year, quantity);
 
                 Button buttonBorrow = new Button("Borrow");
                 buttonBorrow.setOnAction(event -> {

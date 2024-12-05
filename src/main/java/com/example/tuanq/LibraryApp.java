@@ -18,6 +18,10 @@ public class LibraryApp extends Application {
 
         // Tạo Scene
         Scene scene = new Scene(root, 1000, 1000);
+
+        // Thêm đường dẫn đến tệp CSS
+        scene.getStylesheets().add(getClass().getResource("/com/example/tuanq/Styles.css").toExternalForm());
+
         primaryStage.setTitle("Library Management System");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -27,3 +31,4 @@ public class LibraryApp extends Application {
         launch(args);
     }
 }
+

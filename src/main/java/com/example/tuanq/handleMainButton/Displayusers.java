@@ -1,21 +1,24 @@
 package com.example.tuanq.handleMainButton;
-import com.example.tuanq.ExampleValues.UserFactory;
 
+import com.example.tuanq.DatabaseConnection;
 import com.example.tuanq.Users;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 public class Displayusers {
 
     private int currentPage = 1;
-    private final int totalPages = 4;
-    private ObservableList<Users> allUsers;
+    private int totalPages; // Số trang sẽ được tính dựa trên dữ liệu thực tế
+    private final int rowsPerPage = 25; // Số bản ghi tối đa trên mỗi trang
+    private ObservableList<Users> allUsers = FXCollections.observableArrayList();
 
     public BorderPane createUserTable() {
         BorderPane borderPane = new BorderPane();
@@ -49,8 +52,11 @@ public class Displayusers {
         table.getColumns().addAll(IDColumn, nameColumn, emailColumn, addressColumn, phoneColumn);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // Lấy dữ liệu từ UserFactory
-        allUsers = UserFactory.createUsers();
+        // Lấy dữ liệu từ database
+        loadUsersFromDatabase();
+
+        // Tính toán tổng số trang
+        calculateTotalPages();
 
         // Hiển thị dữ liệu của trang đầu tiên
         updateTableContent(table, 1);
@@ -63,6 +69,47 @@ public class Displayusers {
         borderPane.setBottom(buttonBox);
 
         return borderPane;
+    }
+
+    /**
+     * Truy vấn dữ liệu từ database và thêm vào allUsers.
+     */
+    private void loadUsersFromDatabase() {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String sql = "SELECT * FROM Users";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+
+            // Xóa dữ liệu cũ
+            allUsers.clear();
+
+            // Duyệt qua các bản ghi và thêm vào danh sách
+            while (resultSet.next()) {
+                int id = resultSet.getInt("ID");
+                String name = resultSet.getString("Name");
+                String email = resultSet.getString("Email");
+                String address = resultSet.getString("Address");
+                String phone = resultSet.getString("Phone");
+
+                Users user = new Users(name, email, address, phone);
+                user.setID(id); // Gán ID từ database
+                allUsers.add(user);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Tính toán tổng số trang dựa trên số bản ghi và số dòng mỗi trang.
+     */
+    private void calculateTotalPages() {
+        if (allUsers.isEmpty()) {
+            totalPages = 1; // Ít nhất phải có 1 trang ngay cả khi không có dữ liệu
+        } else {
+            totalPages = (int) Math.ceil((double) allUsers.size() / rowsPerPage);
+        }
     }
 
     public HBox updateButtons(TableView<Users> table) {
@@ -123,8 +170,8 @@ public class Displayusers {
     }
 
     private void updateTableContent(TableView<Users> table, int pageNumber) {
-        int startIndex = (pageNumber - 1) * 25;
-        int endIndex = Math.min(startIndex + 25, allUsers.size());
+        int startIndex = (pageNumber - 1) * rowsPerPage;
+        int endIndex = Math.min(startIndex + rowsPerPage, allUsers.size());
         table.setItems(FXCollections.observableArrayList(allUsers.subList(startIndex, endIndex)));
     }
 }

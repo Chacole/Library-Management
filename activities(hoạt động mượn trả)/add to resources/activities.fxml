@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.111"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.tuanq.ActivitiesController"
+            prefHeight="400.0" prefWidth="520.0">
+    <children>
+        <!-- Nút xóa các hoạt động -->
+        <Button text="Delete" layoutX="460.0" layoutY="10.0" onAction="#handleDelete"/>
+        <!-- Bảng hiển thị các hoạt động yêu cầu -->
+        <TableView fx:id="tableView" layoutX="10.0" layoutY="50.0" prefWidth="500.0" prefHeight="330.0">
+            <columns>
+                <TableColumn fx:id="usernameColumn" text="UserName" prefWidth="80.0" />
+                <TableColumn fx:id="requestColumn" text="Request" prefWidth="55.0" />
+                <TableColumn fx:id="documentColumn" text="Document" prefWidth="190.0" />
+                <TableColumn fx:id="statusColumn" text="Status" prefWidth="60.0" />
+                <TableColumn fx:id="timeColumn" text="Time" prefWidth="115.0" />
+            </columns>
+        </TableView>
+    </children>
+</AnchorPane>

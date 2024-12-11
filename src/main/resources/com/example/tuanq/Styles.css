@@ -1,7 +1,7 @@
 /* Đặt nền cho toàn bộ ứng dụng */
 .root {
     -fx-background-color: #ADD8E6;
-    -fx-padding: 20;
+    -fx-padding: 20px; /* Chuyển từ 20 sang 20px */
 }
 
 /* Đặt kiểu cho nhãn chính */
@@ -20,36 +20,42 @@
     -fx-border-color: darkgreen;
     -fx-border-width: 2px;
     -fx-border-style: solid;
+
+    /* Hiệu ứng đổ bóng */
     -fx-effect: dropshadow(gaussian, transparent, 0, 0, 0, 0),
-    dropshadow(gaussian, rgba(18, 18, 18, 0.1), 20, 0.2, 0, 6);
+                 dropshadow(gaussian, rgba(18, 18, 18, 0.1), 20, 0.2, 0, 6);
+
     -fx-text-fill: #121212;
     -fx-cursor: hand;
-    -fx-font-size: 1.2rem;
-    -fx-font-weight: 700;
-    -fx-padding: 1rem 1.2rem;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold; /* Thay thế 700 bằng "bold" */
+    -fx-padding: 16px 20px; /* Thay 1rem 1.2rem bằng px */
     -fx-text-alignment: center;
     -fx-font-family: "Leelawadee UI";
-    -fx-transition: -fx-effect 0.2s;
 }
 
+/* Kiểu khi rê chuột vào nút */
 .button:hover {
     -fx-effect: dropshadow(gaussian, #121212, 3, 0, 0, 0),
-    dropshadow(gaussian, transparent, 0, 0, 0, 0);
+                 dropshadow(gaussian, transparent, 0, 0, 0, 0);
 }
 
+/* Kiểu khi nhấn nút */
 .button:pressed {
     -fx-background-color: #4CAF50;
     -fx-border-color: #388E3C;
     -fx-effect: dropshadow(gaussian, rgba(18, 18, 18, 0.3), 3, 0.2, 0, 2),
-    dropshadow(gaussian, rgba(18, 18, 18, 0.2), 5, 0.5, 0, 4);
-    -fx-transform: scale(0.95);
+                 dropshadow(gaussian, rgba(18, 18, 18, 0.2), 5, 0.5, 0, 4);
+
+    /* Thay thế scale() bằng cách dùng translateY */
+    -fx-translate-y: 2px; /* Giả lập nút bị nhấn */
 }
 
 /* Kiểu cho ô nhập dữ liệu */
 .text-field {
     -fx-border-color: #ccc;
-    -fx-border-radius: 5;
-    -fx-padding: 5;
+    -fx-border-radius: 5px; /* Thêm px */
+    -fx-padding: 5px; /* Thêm px */
     -fx-font-size: 14px;
 }
 
@@ -57,5 +63,5 @@
 .table-view {
     -fx-background-color: #f9f9f9;
     -fx-border-color: #cccccc;
-    -fx-border-radius: 5;
+    -fx-border-radius: 5px; /* Thêm px */
 }

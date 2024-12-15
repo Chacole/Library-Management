@@ -6,11 +6,10 @@ public class Review {
     public int DocumentID;
     public int UserID;
     public String UserName;
-    public Double Rating;
+    public double Rating;
     public String Comment;
 
-    public Review(int ID, int DocumentID, int UserID, String UserName, Double Rating, String Comment) {
-        this.ID = ID;
+    public Review(int DocumentID, int UserID, String UserName, double Rating, String Comment) {
         this.DocumentID = DocumentID;
         this.UserID = UserID;
         this.UserName = UserName;
@@ -26,7 +25,7 @@ public class Review {
         return UserName;
     }
 
-    public Double getRating() {
+    public double getRating() {
         return Rating;
     }
 

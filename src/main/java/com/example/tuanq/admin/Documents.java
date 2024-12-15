@@ -12,6 +12,7 @@ public class Documents {
     protected int YearPublished;
     protected int Quantity;
     protected String imagePath;
+    protected double Rating;
 
     public Documents() {}
 
@@ -37,6 +38,27 @@ public class Documents {
         this.YearPublished = year;
         this.Quantity = quantity;
         this.imagePath = imagePath;
+    }
+
+    public Documents(String author, String title, String type, int year, int quantity, String imagePath, double Rating) {
+        this.Author = author;
+        this.Title = title;
+        this.Type = type;
+        this.YearPublished = year;
+        this.Quantity = quantity;
+        this.imagePath = imagePath;
+        this.Rating = Rating;
+    }
+
+    public Documents(int ID, String author, String title, String type, int year, int quantity, String imagePath, double Rating) {
+        this.ID = ID;
+        this.Author = author;
+        this.Title = title;
+        this.Type = type;
+        this.YearPublished = year;
+        this.Quantity = quantity;
+        this.imagePath = imagePath;
+        this.Rating = Rating;
     }
 
     /**
@@ -85,6 +107,9 @@ public class Documents {
     }
 
     public String getUrl() { return imagePath; }
+    public void setUrl(String url) { this.imagePath = url; }
+
+    public double getRating() { return this.Rating; }
 
     public void updateImageFromApi() {
         if (this.imagePath == null || this.imagePath.isEmpty() || !this.imagePath.startsWith("http")) {

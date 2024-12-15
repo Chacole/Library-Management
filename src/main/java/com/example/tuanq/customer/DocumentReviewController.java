@@ -43,15 +43,17 @@ public class DocumentReviewController implements Initializable {
 
     private double ratingNumber;
 
+    protected int DocumentID;
+
     // Xử lý sự kiện nhấn nút gửi đánh giá
     @FXML
     private void handleSubmit() {
-        String comment = commentArea.getText();
-        int DocumentID = 1; // Sửa theo DocumentID mà nhấp vào
-        int UserID = 1; // Sửa theo UserID nhớ từ login
-        ReviewUtil.getInstance().insert(new Review(0, DocumentID, UserID, "", ratingNumber, comment));
+        Profile profile = Profile.getInstance();
 
-        // Load data from database
+        String comment = commentArea.getText();
+        int UserID = profile.getID();
+        ReviewUtil.getInstance().insert(new Review(DocumentID, UserID, " ", ratingNumber, comment));
+
         tableView.setItems(loadDocumentReviews());
 
         // Hiển thị hộp thoại thông báo đánh giá và bình luận
@@ -87,7 +89,6 @@ public class DocumentReviewController implements Initializable {
 
     private ObservableList<Review> loadDocumentReviews() {
         ObservableList<Review> reviews = FXCollections.observableArrayList();
-        int DocumentID = 1; // Sửa theo DocumentID mà nhấp vào
 
         try {
             Connection connection = DatabaseConnection.getConnection();
@@ -98,7 +99,7 @@ public class DocumentReviewController implements Initializable {
 
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Review nReview = new Review(0, DocumentID,
+                Review nReview = new Review(DocumentID,
                         rs.getInt("UserID"), rs.getString("UserName"),
                         rs.getDouble("Rating"), rs.getString("Comment"));
                 reviews.add(nReview);
@@ -113,5 +114,10 @@ public class DocumentReviewController implements Initializable {
 
     public void updateQRCode(Image qrImage) {
         imageView.setImage(qrImage);
+    }
+
+    public void setDocumentID(int ID) {
+        this.DocumentID = ID;
+        tableView.setItems(loadDocumentReviews());
     }
 }

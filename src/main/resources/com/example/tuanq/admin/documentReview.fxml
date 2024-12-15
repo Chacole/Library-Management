@@ -26,6 +26,7 @@
             <columns>
                 <TableColumn fx:id="usernameColumn" prefWidth="135.0" text="UserName" />
                 <TableColumn fx:id="commentColumn" prefWidth="436.0" text="Comment" />
+                <TableColumn fx:id="deleteColumn" prefWidth="75.0" />
             </columns>
         </TableView>
     </children>

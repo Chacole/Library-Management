@@ -1,12 +1,16 @@
 package com.example.tuanq;
 
+import com.example.tuanq.admin.Documents;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ApiService {
     private static final String GOOGLE_BOOKS_API_KEY = "AIzaSyBz2FeG1-5s9CUnpx7y0kYcbEzLk54SmNo";
@@ -35,5 +39,28 @@ public class ApiService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static List<Documents> searchDocuments(String query) {
+        List<Documents> bookList = new ArrayList<>();
+        try {
+            String apiUrl = GOOGLE_BOOKS_API_URL + query + "&key=" + GOOGLE_BOOKS_API_KEY;
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(apiUrl))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 200) {
+                ParseJSON convertJSON = new ParseJSON();
+                bookList = convertJSON.parseJSON(response.body());
+            } else {
+                System.out.println("Error: " + response.statusCode() + " - " + response.body());
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return bookList;
     }
 }

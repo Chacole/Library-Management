@@ -2,9 +2,7 @@ package com.example.tuanq.admin;
 
 import com.example.tuanq.DatabaseConnection;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class ReviewUtil implements DAO<Review> {
@@ -68,12 +66,19 @@ public class ReviewUtil implements DAO<Review> {
         try {
             Connection connection = DatabaseConnection.getConnection();
 
-            String sql = "CALL DeleteReview(?, ?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, review.DocumentID);
-            preparedStatement.setInt(2, review.UserID);
+            // Sử dụng CallableStatement
+            String sql = "{CALL DeleteReview(?, ?)}";
+            CallableStatement callableStatement = connection.prepareCall(sql);
 
-            deletedRows = preparedStatement.executeUpdate();
+            // Gán tham số cho stored procedure
+            callableStatement.setInt(1, review.DocumentID);
+            callableStatement.setInt(2, review.UserID);
+
+            // Thực thi stored procedure
+            callableStatement.execute();
+
+            // Lấy số hàng bị ảnh hưởng (ROW_COUNT)
+            deletedRows = callableStatement.getUpdateCount();
 
             connection.close();
         } catch (Exception e) {
@@ -95,7 +100,7 @@ public class ReviewUtil implements DAO<Review> {
 
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                Review nReview = new Review(rs.getInt("ID"), rs.getInt("DocumentID"),
+                Review nReview = new Review(rs.getInt("DocumentID"),
                         rs.getInt("UserID"), rs.getString("UserName"),
                         rs.getDouble("Rating"), rs.getString("Comment"));
                 reviews.add(nReview);

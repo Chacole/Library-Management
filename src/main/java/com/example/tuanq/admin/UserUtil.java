@@ -153,6 +153,21 @@ public class UserUtil implements DAO<Users> {
     }
 
     public int addPasswordToAccount(String email, String password) {
-        return 1;
+        int rowsUpdated = 0;
+        Connection connection = null;
+        try {
+            connection = DatabaseConnection.getConnection();
+
+            String sql = "UPDATE Accounts SET Password = ? WHERE Email = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setString(1, password);
+            preparedStatement.setString(2, email);
+
+            rowsUpdated = preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rowsUpdated;
     }
 }

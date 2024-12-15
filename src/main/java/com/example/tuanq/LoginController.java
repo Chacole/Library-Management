@@ -13,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -45,6 +46,7 @@ public class LoginController {
         } else if (role.equals("User")) {
             if (CheckPassword.checkPasswordOfUser(email, password)) {
                 String username = FindNameAfterSignUp.getUsernameByEmail(email);
+                int userID = FindNameAfterSignUp.getUserIDByEmail(email);
                 if (username == null || username.isEmpty()) {
                     showAlert(Alert.AlertType.ERROR, "Lỗi!", "Không tìm thấy username tương ứng với email.");
                     return;
@@ -55,6 +57,7 @@ public class LoginController {
                 Profile profile = Profile.getInstance();
                 profile.setEmail(email);
                 profile.setUsername(username);
+                profile.setID(userID);
                 profile.setRole("User");
 
                 // Chuyển đến màn hình User

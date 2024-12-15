@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.tuanq.admin.DisplaydocumentsResearch">
     <center>
-        <ListView fx:id="listView" prefHeight="700.0"/>
+        <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" vbarPolicy="NEVER">
+            <!-- Nội dung hiển thị sẽ được thêm vào mã Java -->
+        </ScrollPane>
     </center>
-    <bottom>
-        <HBox fx:id="buttonBox" spacing="10" alignment="CENTER" />
-    </bottom>
 </BorderPane>

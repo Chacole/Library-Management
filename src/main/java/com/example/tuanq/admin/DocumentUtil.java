@@ -155,6 +155,6 @@ public class DocumentUtil implements DAO<Documents> {
         if (value == null) {
             return "";
         }
-        return value.replace("'", "''"); // Thay dấu nháy đơn thành hai dấu nháy đơn để thoát
+        return value.replace("'", "''");
     }
 }

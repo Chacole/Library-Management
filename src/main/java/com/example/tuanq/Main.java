@@ -13,6 +13,7 @@ public class Main extends Application {
         primaryStage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/com/example/tuanq/login.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
+
         stage.setTitle("Login and Register");
         stage.setScene(scene);
         stage.centerOnScreen();

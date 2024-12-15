@@ -22,19 +22,21 @@ public class BookQR {
     private static final int QR_HEIGHT = 120;
 
 
-    public class QRCodeGenerator {
-
-        public static BufferedImage generateQRCodeImage(String text) throws WriterException {
-            QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, QR_WIDTH,QR_HEIGHT);
-
-            return MatrixToImageWriter.toBufferedImage(bitMatrix);
+    public static BufferedImage generateQRCodeImage(String text) throws WriterException {
+        if (text == null || text.trim().isEmpty()) {
+            throw new IllegalArgumentException("QR Code content cannot be null or empty.");
         }
+
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, QR_WIDTH,QR_HEIGHT);
+
+        return MatrixToImageWriter.toBufferedImage(bitMatrix);
     }
 
     public static ImageView createQRCodeImageView(String text) {
+
         try {
-            BufferedImage bufferedImage = QRCodeGenerator.generateQRCodeImage(text);
+            BufferedImage bufferedImage = generateQRCodeImage(text);
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "png", outputStream);

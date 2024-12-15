@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.tuanq.customer.UserProfileController"
+            prefWidth="180" prefHeight="180" style="-fx-padding: 10;">
+
+    <!-- HBox để đặt nút Edit -->
+    <HBox GridPane.rowIndex="0" GridPane.columnIndex="0" layoutX="10.0" layoutY="10.0">
+        <Button text="Edit" fx:id="editButton" onAction="#handleEdit"/>
+    </HBox>
+
+    <GridPane layoutX="10.0" layoutY="35.0">
+        <!-- Định nghĩa cột nhãn và cột nội dung -->
+        <columnConstraints>
+            <ColumnConstraints minWidth="100" maxWidth="200" halignment="LEFT"/>
+            <ColumnConstraints minWidth="300" maxWidth="200" halignment="LEFT"/>
+        </columnConstraints>
+
+        <!-- Hiển thị thông tin người dùng -->
+        <Label text="Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+               style="-fx-font-size: 16px; -fx-padding: 0 10 0 0;"/>
+        <Label fx:id="nameLabel" text="Name" GridPane.rowIndex="0" GridPane.columnIndex="1"
+               wrapText="true" maxWidth="Infinity"
+               style="-fx-font-size: 16px; -fx-padding: 0 0 0 10;"/>
+
+        <Label text="Email:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+               style="-fx-font-size: 16px; -fx-padding: 0 10 0 0;"/>
+        <Label fx:id="emailLabel" text="Email" GridPane.rowIndex="1" GridPane.columnIndex="1"
+               wrapText="true" maxWidth="Infinity"
+               style="-fx-font-size: 16px; -fx-padding: 0 0 0 10;"/>
+
+        <Label text="Address:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+               style="-fx-font-size: 16px; -fx-padding: 0 10 0 0;"/>
+        <TextFlow fx:id="addressTextFlow" GridPane.rowIndex="2" GridPane.columnIndex="1" maxWidth="300"
+                  style="-fx-font-size: 16px; -fx-padding: 0 0 0 10;"/>
+
+        <Label text="Phone:" GridPane.rowIndex="3" GridPane.columnIndex="0"
+               style="-fx-font-size: 16px; -fx-padding: 0 10 0 0;"/>
+        <Label fx:id="phoneLabel" text="Phone" GridPane.rowIndex="3" GridPane.columnIndex="1"
+               wrapText="true" maxWidth="Infinity"
+               style="-fx-font-size: 16px; -fx-padding: 0 0 0 10;"/>
+
+    </GridPane>
+</AnchorPane>

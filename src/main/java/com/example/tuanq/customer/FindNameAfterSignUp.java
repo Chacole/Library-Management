@@ -22,4 +22,20 @@ public class FindNameAfterSignUp {
         }
         return null; // Trả về null nếu không tìm thấy username
     }
+
+    public static int getUserIDByEmail(String email) {
+        String sql = "SELECT ID FROM users WHERE email = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, email);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("ID");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
 }

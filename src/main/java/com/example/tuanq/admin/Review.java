@@ -9,8 +9,7 @@ public class Review {
     public Double Rating;
     public String Comment;
 
-    public Review(int ID, int DocumentID, int UserID, String UserName, Double Rating, String Comment) {
-        this.ID = ID;
+    public Review(int DocumentID, int UserID, String UserName, Double Rating, String Comment) {
         this.DocumentID = DocumentID;
         this.UserID = UserID;
         this.UserName = UserName;

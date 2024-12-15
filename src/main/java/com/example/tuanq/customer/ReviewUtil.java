@@ -2,21 +2,21 @@ package com.example.tuanq.customer;
 
 import com.example.tuanq.DatabaseConnection;
 import com.example.tuanq.admin.DAO;
-import com.example.tuanq.admin.Review;
+import com.example.tuanq.customer.Review;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-public class ReviewUtil implements DAO<com.example.tuanq.admin.Review> {
+public class ReviewUtil implements DAO<Review> {
 
     public static ReviewUtil getInstance() {
         return new ReviewUtil();
     }
 
     @Override
-    public int insert(com.example.tuanq.admin.Review review) {
+    public int insert(Review review) {
         int addedRows = 0;
         try {
             Connection connection = DatabaseConnection.getConnection();
@@ -38,7 +38,7 @@ public class ReviewUtil implements DAO<com.example.tuanq.admin.Review> {
     }
 
     @Override
-    public int update(com.example.tuanq.admin.Review review) {
+    public int update(Review review) {
         int editedRows = 0;
 //        String[] words = DocID_AND_UserID.split(",");
 //        int DocumentIDf = Integer.parseInt(words[0]);
@@ -65,7 +65,7 @@ public class ReviewUtil implements DAO<com.example.tuanq.admin.Review> {
     }
 
     @Override
-    public int delete(com.example.tuanq.admin.Review review) {
+    public int delete(Review review) {
         int deletedRows = 0;
         try {
             Connection connection = DatabaseConnection.getConnection();
@@ -85,8 +85,8 @@ public class ReviewUtil implements DAO<com.example.tuanq.admin.Review> {
     }
 
     @Override
-    public ArrayList<com.example.tuanq.admin.Review> select(com.example.tuanq.admin.Review review) {
-        ArrayList<com.example.tuanq.admin.Review> reviews = new ArrayList<>();
+    public ArrayList<Review> select(Review review) {
+        ArrayList<Review> reviews = new ArrayList<>();
         try {
             Connection connection = DatabaseConnection.getConnection();
 
@@ -97,7 +97,7 @@ public class ReviewUtil implements DAO<com.example.tuanq.admin.Review> {
 
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                com.example.tuanq.admin.Review nReview = new Review(rs.getInt("ID"), rs.getInt("DocumentID"),
+                Review nReview = new Review(rs.getInt("DocumentID"),
                         rs.getInt("UserID"), rs.getString("UserName"),
                         rs.getDouble("Rating"), rs.getString("Comment"));
                 reviews.add(nReview);

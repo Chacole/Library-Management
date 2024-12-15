@@ -3,7 +3,7 @@ package com.example.tuanq.customer;
 import com.example.tuanq.*;
 
 import com.example.tuanq.admin.*;
-import com.example.tuanq.admin.DocumentReviewController;
+import com.example.tuanq.customer.DocumentReviewController;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -252,11 +252,20 @@ public class Displaydocuments {
                 ImageView imageView = new ImageView();
                 try {
                     String imagePath = document.getUrl();
-                    if (imagePath.startsWith("http") || imagePath.startsWith("https")) {
+
+                    // Search with API
+                    if (imagePath == null || imagePath.isEmpty()) {
+                        imagePath = ApiService.getGoogleBookImage(document.getTitle());
+                    }
+
+                    if (imagePath == null || imagePath.isEmpty()) {
+                        imageView.setImage(new Image(getClass().getResource("/images/error.png").toExternalForm()));
+                    } else if (imagePath.startsWith("http") || imagePath.startsWith("https")) {
                         imageView = new ImageView(new Image(imagePath));
                     } else {
                         imageView = new ImageView(getClass().getResource(imagePath).toExternalForm());
                     }
+
                 } catch (Exception e) {
                     System.out.println("Error loading image: " + e.getMessage());
                 }
@@ -278,11 +287,12 @@ public class Displaydocuments {
                     ImageView qrImageView = BookQR.createQRCodeImageView(qrContent);
 
                     try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tuanq/admin/DocumentReview.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tuanq/customer/DocumentReview.fxml"));
                         Parent root = loader.load();
 
                         // Lấy controller từ FXML
                         DocumentReviewController controller = loader.getController();
+                        controller.setDocumentID(document.getID());
 
                         // Thay thế ảnh QR trong giao diện
                         controller.updateQRCode(qrImageView.getImage());
@@ -297,7 +307,7 @@ public class Displaydocuments {
                     }
                 });
 
-                VBox vBox = new VBox(5);
+                VBox vBox = new VBox(6);
                 Text author = new Text("Author: " + document.getAuthor());
                 author.setFont(Font.font("Arial", FontWeight.BOLD, 14));
                 author.setFill(javafx.scene.paint.Color.DARKBLUE);
@@ -318,7 +328,11 @@ public class Displaydocuments {
                 quantity.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
                 quantity.setFill(javafx.scene.paint.Color.BLACK);
 
-                vBox.getChildren().addAll(author, title, type, year, quantity);
+                Text rate = new Text("Rate: " + document.getRating());
+                rate.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+                rate.setFill(javafx.scene.paint.Color.DARKBLUE);
+
+                vBox.getChildren().addAll(author, title, type, year, quantity, rate);
 
                 Button buttonBorrow = new Button("Borrow");
                 buttonBorrow.setOnAction(event -> {

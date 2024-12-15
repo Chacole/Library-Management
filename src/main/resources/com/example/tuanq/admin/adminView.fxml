@@ -7,15 +7,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.Region?>
-<BorderPane prefHeight="1000.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.tuanq.admin.LibraryAdminController">
+<BorderPane prefHeight="1000.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tuanq.admin.LibraryAdminController">
 
     <!-- Tiêu đề ở phía trên -->
     <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="1200.0" spacing="10" style="-fx-background-color: #4682B4;">
+        <HBox alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="1200.0" spacing="10" styleClass="top-hbox">
             <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
@@ -34,13 +33,6 @@
 
             <Region HBox.hgrow="ALWAYS" />
             <Button fx:id="buttonSignOut" onAction="#handleSignOut" text="Sign Out" />
-            <Button fx:id="buttonProfile" maxHeight="40" maxWidth="40" minHeight="40" minWidth="40" onAction="#handleProfile" style="-fx-background-color: transparent; -fx-padding: 0;">
-                <graphic>
-                    <ImageView fitHeight="30" fitWidth="30">
-                        <Image url="@../../../../images/profile.png" />
-                    </ImageView>
-                </graphic>
-            </Button>
             <Button fx:id="buttonNotification" maxHeight="40" maxWidth="40" minHeight="40" minWidth="40" onAction="#handleRequesting" style="-fx-background-color: transparent; -fx-padding: 0;">
                 <graphic>
                     <ImageView fitHeight="30" fitWidth="30">
@@ -53,7 +45,7 @@
 
     <!-- Thanh bên trái -->
     <left>
-        <VBox prefHeight="931.0" prefWidth="205.0" spacing="10" style="-fx-background-color: #FFFFFF;">
+        <VBox prefHeight="931.0" prefWidth="205.0" spacing="10" styleClass="left-vbox">
             <padding>
                 <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
@@ -116,12 +108,14 @@
             <VBox.margin>
                <Insets bottom="30.0" />
             </VBox.margin></Button>
+
+            <Button maxWidth="Infinity" onAction="#handleSearch" text="Search" />
         </VBox>
     </left>
 
     <!-- Khu vực nội dung chính -->
     <center>
-        <VBox alignment="TOP_CENTER" prefHeight="951.0" prefWidth="1000.0" spacing="5">
+        <VBox alignment="TOP_CENTER" prefHeight="951.0" prefWidth="1000.0" spacing="5" styleClass="center-vbox">
             <children>
                 <!-- HBox chứa button con -->
                 <HBox fx:id="ButtonBox" alignment="CENTER" prefHeight="40.0" prefWidth="1058.5" spacing="5" style="-fx-padding: 10;" />

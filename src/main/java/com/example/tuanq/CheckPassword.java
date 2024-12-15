@@ -46,4 +46,24 @@ public class CheckPassword {
         }
         return false;
     }
+
+    public static boolean checkPasswordForEdit(int UserID, String password) {
+        try {
+            Connection connection = DatabaseConnection.getConnection();
+
+            String sql = "SELECT Password FROM accounts WHERE AccountID = ? LIMIT 1;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, UserID);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return password.equals(rs.getString("Password"));
+            }
+
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

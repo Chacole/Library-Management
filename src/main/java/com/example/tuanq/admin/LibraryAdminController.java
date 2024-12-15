@@ -26,9 +26,6 @@ public class LibraryAdminController {
     private Button buttonSignOut;
 
     @FXML
-    private Button buttonProfile;
-
-    @FXML
     private Button buttonNotification;
 
     @FXML
@@ -64,12 +61,6 @@ public class LibraryAdminController {
     }
 
     @FXML
-    private void handleProfile() {
-
-    }
-
-
-    @FXML
     private void handleExit() {
         Exit exit = new Exit();
         exit.exitSystem();
@@ -100,7 +91,7 @@ public class LibraryAdminController {
 
                 // Lấy controller của view kết quả
                 DisplaydocumentsResearch displayDocumentsResearch = loader.getController();
-                displayDocumentsResearch.setDocuments(documents); // Truyền danh sách tài liệu vào ListView
+                displayDocumentsResearch.setDocuments(documents);
 
                 contentBox.getChildren().clear(); // Xóa nội dung cũ
                 contentBox.getChildren().add(researchView); // Hiển thị nội dung mới
@@ -114,7 +105,10 @@ public class LibraryAdminController {
     private void handleDisplayDocument() {
         try {
             // Tải documents.fxml và thêm vào contentBox
-            Parent documentView = FXMLLoader.load(getClass().getResource("/com/example/tuanq/admin/documents.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tuanq/admin/documents.fxml"));
+            Parent documentView = loader.load();
+            Displaydocuments displayDocumentsController = loader.getController();
+
             contentBox.getChildren().clear();
             contentBox.getChildren().add(documentView);
 
@@ -192,8 +186,11 @@ public class LibraryAdminController {
             });
 
             // Tải buttonsdocument.fxml và xử lý các button từ file FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tuanq/admin/buttonsdocument.fxml"));
-            HBox buttonView = loader.load(); // Chỉ tải phần `HBox` từ FXML
+            FXMLLoader buttonLoader = new FXMLLoader(getClass().getResource("/com/example/tuanq/admin/buttonsdocument.fxml"));
+            HBox buttonView = buttonLoader.load();
+            toolsDocuments toolsController = buttonLoader.getController();
+
+            toolsController.setDisplayDocumentsController(displayDocumentsController);
 
             Region spacer = new Region();
             ButtonBox.setHgrow(spacer, Priority.ALWAYS);
@@ -369,5 +366,18 @@ public class LibraryAdminController {
         contentBox.getChildren().add(displayborrowrecord.createBorrowRecordTable());
 
         ButtonBox.getChildren().clear();
+    }
+
+    @FXML
+    private void handleSearch() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tuanq/admin/Search.fxml"));
+            Parent documentView = loader.load();
+
+            contentBox.getChildren().clear();
+            contentBox.getChildren().add(documentView);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }

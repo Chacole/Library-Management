@@ -11,8 +11,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -27,9 +25,6 @@ public class LibraryCustomerController {
     private Button buttonProfile;
 
     @FXML
-    private Button buttonNotification;
-
-    @FXML
     private Button handleExit;
 
     @FXML
@@ -39,6 +34,29 @@ public class LibraryCustomerController {
     private Button handleBorrowDocument;
 
     protected NavigationSystem navigationSystem = new NavigationSystem(Main.getPrimaryStage());
+
+    @FXML
+    private void handleProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tuanq/profile.fxml"));
+            Parent root = loader.load();
+
+            Stage profileStage = new Stage();
+            profileStage.setTitle("User Profile");
+
+            // Đặt Scene cho Stage
+            Scene profileScene = new Scene(root, 400, 300);
+            profileStage.setScene(profileScene);
+
+            // Đặt cửa sổ mới ở giữa màn hình
+            profileStage.centerOnScreen();
+
+            // Hiển thị cửa sổ
+            profileStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private void handleSignOut() {
@@ -62,16 +80,6 @@ public class LibraryCustomerController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @FXML
-    private void handleProfile() {
-
-    }
-
-    @FXML
-    private void handleNotification() {
-
     }
 
     @FXML

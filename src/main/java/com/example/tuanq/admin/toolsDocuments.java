@@ -19,6 +19,12 @@ public class toolsDocuments {
     @FXML
     private Button buttonUpdate;
 
+    private Displaydocuments displayDocumentsController;
+
+    public void setDisplayDocumentsController(Displaydocuments displayDocumentsController) {
+        this.displayDocumentsController = displayDocumentsController;
+    }
+
     @FXML
     private void handleButtonPlus() throws IOException {
         // Tạo Dialog
@@ -142,6 +148,9 @@ public class toolsDocuments {
                 alert.setHeaderText("Success");
                 alert.setContentText("Document added successfully.");
 
+                if (displayDocumentsController != null) {
+                    displayDocumentsController.reloadDocuments();
+                }
             } else {
                 alert.setAlertType(Alert.AlertType.ERROR);
                 alert.setHeaderText("Failed");
@@ -177,6 +186,10 @@ public class toolsDocuments {
                 int rowsDeleted = documentutil.delete(documentToDelete);
                 if (rowsDeleted > 0) {
                     System.out.println("Document deleted successfully.");
+
+                    if (displayDocumentsController != null) {
+                        displayDocumentsController.reloadDocuments();
+                    }
                 } else {
                     System.out.println("Failed to delete document. Document not found.");
                 }
@@ -328,6 +341,10 @@ public class toolsDocuments {
             if (rowsUpdated > 0) {
                 alert.setHeaderText("Success");
                 alert.setContentText("Document updated successfully.");
+
+                if (displayDocumentsController != null) {
+                    displayDocumentsController.reloadDocuments();
+                }
             } else {
                 alert.setAlertType(Alert.AlertType.ERROR);
                 alert.setHeaderText("Failed");

@@ -25,6 +25,14 @@ public class Users {
         this.Phone = phone;
     }
 
+    public Users(int id, String name, String email, String address, String phone) {
+        this.ID = id;
+        this.Name = name;
+        this.Email = email;
+        this.Address = address;
+        this.Phone = phone;
+    }
+
     /**
      * getter and setter.
      */

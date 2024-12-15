@@ -36,14 +36,15 @@ public class DocumentDataLoader {
                         }
 
                         Documents document = new Documents(
+                                resultSet.getInt("ID"),
                                 resultSet.getString("Author"),
                                 resultSet.getString("Title"),
                                 resultSet.getString("Type"),
                                 resultSet.getInt("Year"),
                                 resultSet.getInt("Quantity"),
-                                resultSet.getString("ImagePath")
+                                resultSet.getString("ImagePath"),
+                                resultSet.getDouble("rating")
                         );
-                        document.setID(resultSet.getInt("ID"));
                         document.updateImageFromApi(); // Cập nhật hình ảnh
 
                         documents.add(document);

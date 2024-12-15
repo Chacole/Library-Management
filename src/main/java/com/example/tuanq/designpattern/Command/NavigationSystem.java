@@ -12,6 +12,6 @@ public class NavigationSystem {
 
     public void switchToScene(Scene scene) {
         stage.setScene(scene);
-        stage.show(); // Đảm bảo hiển thị
+        stage.show();
     }
 }

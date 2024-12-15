@@ -2,6 +2,7 @@ package com.example.tuanq.customer;
 
 public class Profile {
     private static Profile instance;
+    private int ID;
     private String username;
     private String email;
     private String role;
@@ -18,6 +19,14 @@ public class Profile {
     }
 
     // Getters và setters cho thông tin người dùng
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
     public String getUsername() {
         return username;
     }

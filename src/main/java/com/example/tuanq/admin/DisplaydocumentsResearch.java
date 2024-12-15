@@ -1,259 +1,131 @@
 package com.example.tuanq.admin;
 
+import com.example.tuanq.ApiService;
+import com.example.tuanq.BookQR;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class DisplaydocumentsResearch {
-    private int currentPage = 1;
-    private int totalPages;
-    private final int rowsPerPage = 9;
+    private final int documentsPerRow = 4;
+    private final int documentsPerPage = 12;
     private ObservableList<Documents> allDocuments;
+    private int loadedDocuments = 0;
 
     @FXML
-    private ListView<Documents> listView;
+    private ScrollPane scrollPane;
 
-    @FXML
-    private HBox buttonBox = new HBox(10);
+    private GridPane documentGrid; // GridPane chứa các document
 
     @FXML
     public void initialize() {
-        listView.setCellFactory(param -> new DocumentCell());
+        documentGrid = new GridPane();
+        documentGrid.setHgap(20);
+        documentGrid.setVgap(20);
+        documentGrid.setAlignment(Pos.TOP_CENTER);
+
+        documentGrid.setStyle("-fx-padding: 20 0 0 20;");
+
+        // Gắn GridPane vào ScrollPane
+        scrollPane.setContent(documentGrid);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        scrollPane.vvalueProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue.doubleValue() > 0.9) {
+                loadMoreDocuments();
+            }
+        });
     }
 
     public void setDocuments(ArrayList<Documents> documents) {
         allDocuments = FXCollections.observableArrayList(documents);
-        calculateTotalPages();
-        updateTableContent(1);
-        updateButtons();
+        loadedDocuments = 0;
+        documentGrid.getChildren().clear();
+        loadMoreDocuments();
     }
 
-    private void calculateTotalPages() {
-        if (allDocuments == null || allDocuments.isEmpty()) {
-            totalPages = 1; // Nếu không có tài liệu, mặc định 1 trang
-        } else {
-            totalPages = (int) Math.ceil((double) allDocuments.size() / rowsPerPage);
-        }
-    }
-
-    private void updateTableContent(int pageNumber) {
-        if (allDocuments == null || allDocuments.isEmpty()) {
-            listView.setItems(FXCollections.observableArrayList());
+    private void loadMoreDocuments() {
+        if (allDocuments == null || loadedDocuments >= allDocuments.size()) {
             return;
         }
 
-        int startIndex = (pageNumber - 1) * rowsPerPage;
-        int endIndex = Math.min(startIndex + rowsPerPage, allDocuments.size());
+        int endIndex = Math.min(loadedDocuments + documentsPerPage, allDocuments.size());
 
-        if (startIndex >= 0 && startIndex < allDocuments.size()) {
-            listView.setItems(FXCollections.observableArrayList(allDocuments.subList(startIndex, endIndex)));
-        }
-    }
+        for (int i = loadedDocuments; i < endIndex; i++) {
+            Documents document = allDocuments.get(i);
 
-    private HBox updateButtons() {
-        buttonBox.getChildren().clear();
-
-        // Nút "Prev"
-        Button prevButton = new Button("Prev");
-        prevButton.setDisable(currentPage == 1); // Vô hiệu hóa nếu ở trang đầu tiên
-        prevButton.setOnAction(event -> {
-            if (currentPage > 1) {
-                currentPage--;
-                updateTableContent(currentPage);
-                refreshPagination();
-            }
-        });
-        buttonBox.getChildren().add(prevButton);
-
-        // Nút trang hiện tại
-        Button currentButton = new Button(String.valueOf(currentPage));
-        currentButton.setOnAction(event -> handlePageChange(currentPage));
-        buttonBox.getChildren().add(currentButton);
-
-        // Nút trang kế tiếp (nếu có)
-        if (currentPage < totalPages) {
-            Button nextPageButton = new Button(String.valueOf(currentPage + 1));
-            nextPageButton.setOnAction(event -> handlePageChange(currentPage + 1));
-            buttonBox.getChildren().add(nextPageButton);
-        }
-
-        // Nút "Next"
-        Button nextButton = new Button("Next");
-        nextButton.setDisable(currentPage == totalPages); // Vô hiệu hóa nếu ở trang cuối
-        nextButton.setOnAction(event -> {
-            if (currentPage < totalPages) {
-                currentPage++;
-                updateTableContent(currentPage);
-                refreshPagination();
-            }
-        });
-        buttonBox.getChildren().add(nextButton);
-
-        return buttonBox;
-    }
-
-    private void refreshPagination() {
-        BorderPane parent = (BorderPane) listView.getParent();
-        HBox newButtonBox = updateButtons();
-        parent.setBottom(newButtonBox);
-    }
-
-    private void handlePageChange(int page) {
-        if (page >= 1 && page <= totalPages) {
-            currentPage = page;
-            updateTableContent(page);
-            refreshPagination();
-        }
-    }
-
-    // Tùy chỉnh CellFactory
-    private static class DocumentCell extends ListCell<Documents> {
-        @Override
-        protected void updateItem(Documents document, boolean empty) {
-            super.updateItem(document, empty);
-
-            if (empty || document == null) {
-                setGraphic(null);
-                setText(null);
-            } else {
-                HBox hBox = new HBox(10);
-                hBox.setStyle("-fx-padding: 10; -fx-background-color: lightgrey; -fx-background-radius: 5;");
-
-                ImageView imageView = new ImageView();
-                try {
-                    String imagePath = document.getUrl();
-                    if (imagePath.startsWith("http") || imagePath.startsWith("https")) {
-                        imageView = new ImageView(new Image(imagePath));
-                    } else {
-                        imageView = new ImageView(getClass().getResource(imagePath).toExternalForm());
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error loading image: " + e.getMessage());
+            ImageView imageView = new ImageView();
+            try {
+                String imagePath = document.getUrl();
+                // Search with API
+                if (imagePath == null || imagePath.isEmpty()) {
+                    imagePath = ApiService.getGoogleBookImage(document.getTitle());
                 }
 
-                imageView.setFitWidth(90);
-                imageView.setFitHeight(120);
-
-                VBox vBox = new VBox(5);
-                Text ID = new Text("ID: " + document.getID());
-                Text author = new Text("Author: " + document.getAuthor());
-                Text title = new Text("Title: " + document.getTitle());
-                Text type = new Text("Type: " + document.getType());
-                Text year = new Text("Year: " + document.getYear());
-                Text quantity = new Text("Quantity: " + document.getQuantity());
-
-                vBox.getChildren().addAll(ID, author, title, type, year, quantity);
-
-                Button buttonBorrow = new Button("Borrow");
-                buttonBorrow.setOnAction(event -> {
-                    // Tạo Dialog
-                    Dialog<BorrowRecord> dialog = new Dialog<>();
-                    dialog.setTitle("User Information Form");
-                    dialog.setHeaderText("Please enter your details below:");
-
-                    // Nút Submit và Cancel
-                    ButtonType submitButtonType = new ButtonType("Submit", ButtonBar.ButtonData.OK_DONE);
-                    dialog.getDialogPane().getButtonTypes().addAll(submitButtonType, ButtonType.CANCEL);
-
-                    Button submitButton = (Button) dialog.getDialogPane().lookupButton(submitButtonType);
-                    submitButton.setDisable(true);
-
-                    TextField nameField = new TextField();
-                    nameField.setPromptText("userName");
-
-                    DatePicker borrowPicker = new DatePicker();
-                    borrowPicker.setPromptText("Date of Borrowing");
-
-                    DatePicker returnPicker = new DatePicker();
-                    returnPicker.setPromptText("Date of Returning");
-
-                    submitButton.disableProperty().bind(
-                            Bindings.createBooleanBinding(() ->
-                                            nameField.getText().trim().isEmpty() ||
-                                                    borrowPicker.getValue() == null ||
-                                                    returnPicker.getValue() == null,
-                                    nameField.textProperty(),
-                                    borrowPicker.valueProperty(),
-                                    returnPicker.valueProperty()
-                            )
-                    );
-
-                    GridPane grid = new GridPane();
-                    grid.setHgap(10);
-                    grid.setVgap(10);
-
-                    grid.add(new Label("Name:"), 0, 0);
-                    grid.add(nameField, 1, 0);
-                    grid.add(new Label("Date of Borrowing:"), 0, 1);
-                    grid.add(borrowPicker, 1, 1);
-                    grid.add(new Label("Date of Returning:"), 0, 2);
-                    grid.add(returnPicker, 1, 2);
-
-                    GridPane.setHgrow(nameField, Priority.ALWAYS);
-                    GridPane.setHgrow(borrowPicker, Priority.ALWAYS);
-                    GridPane.setHgrow(returnPicker, Priority.ALWAYS);
-
-                    dialog.getDialogPane().setContent(grid);
-
-                    // Xử lý khi nhấn nút Submit
-                    dialog.setResultConverter(dialogButton -> {
-                        if (dialogButton == submitButtonType) {
-                            String userName = nameField.getText();
-                            LocalDate borrowDate = borrowPicker.getValue();
-                            LocalDate returnDate = returnPicker.getValue();
-
-                            // Chuyển đổi LocalDate thành java.util.Date
-                            Date borrowDateConverted = Date.from(borrowDate.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
-                            Date returnDateConverted = Date.from(returnDate.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
-
-                            // Trả về đối tượng BorrowRecord
-                            return new BorrowRecord(userName, document.getTitle(), borrowDateConverted, returnDateConverted);
-                        }
-                        return null; // Trả về null nếu nhấn Cancel
-                    });
-
-                    // Hiển thị dialog và nhận kết quả
-                    dialog.showAndWait().ifPresent(result -> {
-                        System.out.println("User Name: " + result.getUserName());
-                        System.out.println("Document Title: " + result.getDocumentTitle());
-                        System.out.println("Borrow Date: " + result.getFormattedBorrowDate());
-                        System.out.println("Return Date: " + result.getFormattedReturnDate());
-
-                        boolean r = new RecordUtil().addBorrowRecord(result);
-                        if (r) {
-                            System.out.println("Borrow record đã được thêm thành công.");
-                        } else {
-                            System.out.println("Thêm borrow record thất bại.");
-                        }
-                    });
-                });
-
-                buttonBorrow.setPrefWidth(100);
-                buttonBorrow.setPrefHeight(30);
-
-                HBox buttonContainer = new HBox(buttonBorrow);
-                buttonContainer.setAlignment(Pos.CENTER_RIGHT);
-                HBox.setHgrow(buttonContainer, Priority.ALWAYS);
-
-                hBox.getChildren().addAll(imageView, vBox, buttonContainer);
-                HBox.setHgrow(vBox, Priority.ALWAYS);
-                setGraphic(hBox);
+                if (imagePath == null || imagePath.isEmpty()) {
+                    imageView.setImage(new Image(getClass().getResource("/images/error.png").toExternalForm()));
+                } else if (imagePath.startsWith("http") || imagePath.startsWith("https")) {
+                    imageView.setImage(new Image(imagePath));
+                } else {
+                    imageView.setImage(new Image(getClass().getResource(imagePath).toExternalForm()));
+                }
+            } catch (Exception e) {
+                System.out.println("Error loading image: " + e.getMessage());
             }
-        }
-    }
 
-    public ListView<Documents> getListView() {
-        return listView;
+            imageView.setFitWidth(150);
+            imageView.setFitHeight(200);
+            imageView.setPreserveRatio(true);
+
+            Button imageButton = new Button();
+            imageButton.setGraphic(imageView);
+            imageButton.setStyle("-fx-background-color: transparent;");
+            imageButton.setOnAction(event -> {
+                String qrContent = "Author: " + document.getAuthor() + "\n"
+                        + "Title: " + document.getTitle() + "\n"
+                        + "Type: " + document.getType() + "\n"
+                        + "Year: " + document.getYear();
+
+                ImageView qrImageView = BookQR.createQRCodeImageView(qrContent);
+
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tuanq/admin/DocumentReview.fxml"));
+                    Parent root = loader.load();
+
+                    DocumentReviewController controller = loader.getController();
+
+                    controller.updateQRCode(qrImageView.getImage());
+
+                    Stage stage = new Stage();
+                    stage.setTitle("Document Review");
+                    stage.setScene(new Scene(root));
+                    stage.show();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            int row = i / documentsPerRow;
+            int col = i % documentsPerRow;
+            documentGrid.add(imageButton, col, row);
+        }
+
+        loadedDocuments = endIndex;
     }
 }

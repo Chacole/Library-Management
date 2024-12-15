@@ -66,7 +66,7 @@ public class LibraryAdminController {
         exit.exitSystem();
     }
 
-    private void performSearch(TextField authorField, TextField titleField, TextField typeField, TextField yearPublishedField) {
+    private void performDocumentSearch(TextField authorField, TextField titleField, TextField typeField, TextField yearPublishedField) {
         String author = authorField.getText().trim();
         String title = titleField.getText().trim();
         String type = typeField.getText().trim();
@@ -92,6 +92,36 @@ public class LibraryAdminController {
                 // Lấy controller của view kết quả
                 DisplaydocumentsResearch displayDocumentsResearch = loader.getController();
                 displayDocumentsResearch.setDocuments(documents);
+
+                contentBox.getChildren().clear(); // Xóa nội dung cũ
+                contentBox.getChildren().add(researchView); // Hiển thị nội dung mới
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void performUserSearch(TextField nameField, TextField emailField, TextField addressField, TextField phoneField) {
+        String name = nameField.getText().trim();
+        String email = emailField.getText().trim();
+        String address = addressField.getText().trim();
+        String phone = phoneField.getText().trim();
+
+        Users searchCriteria = new Users(name, email, address, phone);
+
+        UserUtil userUtil = new UserUtil();
+        ArrayList<Users> users = userUtil.select(searchCriteria);
+
+        if (users == null || users.isEmpty()) {
+            System.out.println("No users found");
+            contentBox.getChildren().clear(); // Xóa nội dung cũ
+        } else {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tuanq/admin/researchUsers.fxml"));
+                Parent researchView = loader.load();
+
+                DisplayusersResearch displayUsersResearch = loader.getController();
+                displayUsersResearch.setUsers(users);
 
                 contentBox.getChildren().clear(); // Xóa nội dung cũ
                 contentBox.getChildren().add(researchView); // Hiển thị nội dung mới
@@ -175,10 +205,10 @@ public class LibraryAdminController {
                 dialog.getDialogPane().setContent(grid);
 
                 // Lắng nghe sự thay đổi dữ liệu và thực hiện tìm kiếm ngay lập tức
-                authorField.textProperty().addListener((observable, oldValue, newValue) -> performSearch(authorField, titleField, typeField, yearPublishedField));
-                titleField.textProperty().addListener((observable, oldValue, newValue) -> performSearch(authorField, titleField, typeField, yearPublishedField));
-                typeField.textProperty().addListener((observable, oldValue, newValue) -> performSearch(authorField, titleField, typeField, yearPublishedField));
-                yearPublishedField.textProperty().addListener((observable, oldValue, newValue) -> performSearch(authorField, titleField, typeField, yearPublishedField));
+                authorField.textProperty().addListener((observable, oldValue, newValue) -> performDocumentSearch(authorField, titleField, typeField, yearPublishedField));
+                titleField.textProperty().addListener((observable, oldValue, newValue) -> performDocumentSearch(authorField, titleField, typeField, yearPublishedField));
+                typeField.textProperty().addListener((observable, oldValue, newValue) -> performDocumentSearch(authorField, titleField, typeField, yearPublishedField));
+                yearPublishedField.textProperty().addListener((observable, oldValue, newValue) -> performDocumentSearch(authorField, titleField, typeField, yearPublishedField));
 
                 // Hiển thị Dialog
                 dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
@@ -290,46 +320,14 @@ public class LibraryAdminController {
             dialog.getDialogPane().setContent(grid);
 
             // Xử lý kết quả
-            dialog.setResultConverter(dialogButton -> {
-                if (dialogButton == okButtonType) {
-                    String name = nameField.getText().trim();
-                    String email = emailField.getText().trim();
-                    String address = addressField.getText().trim();
-                    String phone = phoneField.getText().trim();
-                    return new Users(name, email, address, phone);
-                }
-                return null;
-            });
+            // Lắng nghe sự thay đổi dữ liệu và thực hiện tìm kiếm ngay lập tức
+            nameField.textProperty().addListener((observable, oldValue, newValue) -> performUserSearch(nameField, emailField, addressField, phoneField));
+            emailField.textProperty().addListener((observable, oldValue, newValue) -> performUserSearch(nameField, emailField, addressField, phoneField));
+            addressField.textProperty().addListener((observable, oldValue, newValue) -> performUserSearch(nameField, emailField, addressField, phoneField));
+            phoneField.textProperty().addListener((observable, oldValue, newValue) -> performUserSearch(nameField, emailField, addressField, phoneField));
 
-            // Hiển thị Dialog và nhận kết quả
-            Optional<Users> result = dialog.showAndWait();
-            result.ifPresent(userData -> {
-                System.out.println("Name: " + userData.getName());
-                System.out.println("Email: " + userData.getEmail());
-                System.out.println("Address: " + userData.getAddress());
-                System.out.println("Phone: " + userData.getPhone());
-
-                UserUtil userUtil = new UserUtil();
-                ArrayList<Users> users = userUtil.select(userData);
-
-                if (users == null || users.isEmpty()) {
-                    System.out.println("No users found");
-                } else {
-                    try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tuanq/admin/researchUsers.fxml"));
-                        Parent researchView = loader.load();
-
-                        // Lấy controller của DisplayusersResearch
-                        DisplayusersResearch displayUsersResearch = loader.getController();
-                        displayUsersResearch.setUsers(users); // Truyền dữ liệu vào TableView
-
-                        contentBox.getChildren().clear(); // Làm sạch nội dung cũ
-                        contentBox.getChildren().add(researchView); // Thêm nội dung mới
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.show();
         });
 
         try {

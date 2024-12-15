@@ -4,7 +4,7 @@ import com.example.tuanq.Main;
 import com.example.tuanq.customer.Profile;
 import com.example.tuanq.designpattern.Command.Command;
 import com.example.tuanq.designpattern.Command.ConcreteCommand;
-import com.example.tuanq.designpattern.Command.NavigationSystem;
+import com.example.tuanq.designpattern.Command.Navigate;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -34,7 +34,7 @@ public class LibraryAdminController {
     @FXML
     private HBox ButtonBox;
 
-    protected NavigationSystem navigationSystem = new NavigationSystem(Main.getPrimaryStage());
+    protected Navigate navigate = new Navigate(Main.getPrimaryStage());
 
     @FXML
     private void handleSignOut() {
@@ -51,7 +51,7 @@ public class LibraryAdminController {
             stage.centerOnScreen();
 
             // Tạo Command để chuyển đổi cảnh
-            Command switchToLoginScene = new ConcreteCommand(new NavigationSystem(stage), loginScene);
+            Command switchToLoginScene = new ConcreteCommand(new Navigate(stage), loginScene);
 
             // Thực thi Command
             switchToLoginScene.execute();
@@ -205,6 +205,41 @@ public class LibraryAdminController {
         }
     }
 
+    private void performUserSearch(TextField nameField, TextField emailField, TextField addressField, TextField phoneField) {
+        String name = nameField.getText().trim();
+        String email = emailField.getText().trim();
+        String address = addressField.getText().trim();
+        String phone = phoneField.getText().trim();
+
+        // Tạo đối tượng chứa tiêu chí tìm kiếm
+        Users searchCriteria = new Users(name, email, address, phone);
+
+        // Gọi UserUtil để tìm kiếm
+        UserUtil userUtil = new UserUtil();
+        ArrayList<Users> users = userUtil.select(searchCriteria);
+
+        // Hiển thị kết quả
+        if (users == null || users.isEmpty()) {
+            System.out.println("No users found");
+            contentBox.getChildren().clear(); // Xóa nội dung cũ
+        } else {
+            try {
+                // Tải view hiển thị kết quả tìm kiếm
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tuanq/admin/researchUsers.fxml"));
+                Parent researchView = loader.load();
+
+                // Lấy controller của view kết quả
+                DisplayusersResearch displayUsersResearch = loader.getController();
+                displayUsersResearch.setUsers(users);
+
+                contentBox.getChildren().clear(); // Xóa nội dung cũ
+                contentBox.getChildren().add(researchView); // Hiển thị nội dung mới
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @FXML
     private void handleDisplayUser() {
         contentBox.getChildren().clear();
@@ -229,6 +264,8 @@ public class LibraryAdminController {
             Dialog<Users> dialog = new Dialog<>();
             dialog.setTitle("Research User Form");
             dialog.setHeaderText("Please enter your details below:");
+
+            dialog.getDialogPane().setPrefSize(400, 500);
 
             // Thêm các nút OK và Cancel
             ButtonType okButtonType = new ButtonType("Submit", ButtonBar.ButtonData.OK_DONE);
@@ -289,52 +326,23 @@ public class LibraryAdminController {
 
             dialog.getDialogPane().setContent(grid);
 
-            // Xử lý kết quả
-            dialog.setResultConverter(dialogButton -> {
-                if (dialogButton == okButtonType) {
-                    String name = nameField.getText().trim();
-                    String email = emailField.getText().trim();
-                    String address = addressField.getText().trim();
-                    String phone = phoneField.getText().trim();
-                    return new Users(name, email, address, phone);
-                }
-                return null;
-            });
+            // Lắng nghe sự thay đổi dữ liệu và thực hiện tìm kiếm ngay lập tức
+            nameField.textProperty().addListener((observable, oldValue, newValue) -> performUserSearch(nameField, emailField, addressField, phoneField));
+            emailField.textProperty().addListener((observable, oldValue, newValue) -> performUserSearch(nameField, emailField, addressField, phoneField));
+            addressField.textProperty().addListener((observable, oldValue, newValue) -> performUserSearch(nameField, emailField, addressField, phoneField));
+            phoneField.textProperty().addListener((observable, oldValue, newValue) -> performUserSearch(nameField, emailField, addressField, phoneField));
 
-            // Hiển thị Dialog và nhận kết quả
-            Optional<Users> result = dialog.showAndWait();
-            result.ifPresent(userData -> {
-                System.out.println("Name: " + userData.getName());
-                System.out.println("Email: " + userData.getEmail());
-                System.out.println("Address: " + userData.getAddress());
-                System.out.println("Phone: " + userData.getPhone());
-
-                UserUtil userUtil = new UserUtil();
-                ArrayList<Users> users = userUtil.select(userData);
-
-                if (users == null || users.isEmpty()) {
-                    System.out.println("No users found");
-                } else {
-                    try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tuanq/admin/researchUsers.fxml"));
-                        Parent researchView = loader.load();
-
-                        // Lấy controller của DisplayusersResearch
-                        DisplayusersResearch displayUsersResearch = loader.getController();
-                        displayUsersResearch.setUsers(users); // Truyền dữ liệu vào TableView
-
-                        contentBox.getChildren().clear(); // Làm sạch nội dung cũ
-                        contentBox.getChildren().add(researchView); // Thêm nội dung mới
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            // Hiển thị Dialog
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.show();
         });
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/tuanq/admin/buttonsuser.fxml"));
             HBox buttonView = loader.load();
+            toolsUsers toolsController = loader.getController();
+
+            toolsController.setDisplayDocumentsController(displayUsers);
 
             Region spacer = new Region();
             ButtonBox.setHgrow(spacer, Priority.ALWAYS);

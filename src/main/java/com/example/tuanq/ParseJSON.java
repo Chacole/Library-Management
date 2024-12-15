@@ -20,7 +20,6 @@ public class ParseJSON {
                 JSONObject item = itemsArray.getJSONObject(i);
                 JSONObject volumeInfo = item.optJSONObject("volumeInfo");
 
-                // Lấy các trường dữ liệu từ JSON
                 String title = volumeInfo.optString("title", "Can't find Title");
                 String author = volumeInfo.optJSONArray("authors") != null
                         ? volumeInfo.getJSONArray("authors").optString(0)

@@ -3,10 +3,10 @@ package com.example.tuanq.designpattern.Command;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class NavigationSystem {
+public class Navigate {
     private Stage stage;
 
-    public NavigationSystem(Stage stage) {
+    public Navigate(Stage stage) {
         this.stage = stage;
     }
 

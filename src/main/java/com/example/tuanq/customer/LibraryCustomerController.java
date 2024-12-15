@@ -5,7 +5,7 @@ import com.example.tuanq.admin.DisplayBorrowRecord;
 import com.example.tuanq.admin.Exit;
 import com.example.tuanq.designpattern.Command.Command;
 import com.example.tuanq.designpattern.Command.ConcreteCommand;
-import com.example.tuanq.designpattern.Command.NavigationSystem;
+import com.example.tuanq.designpattern.Command.Navigate;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,7 +33,7 @@ public class LibraryCustomerController {
     @FXML
     private Button handleBorrowDocument;
 
-    protected NavigationSystem navigationSystem = new NavigationSystem(Main.getPrimaryStage());
+    protected Navigate navigate = new Navigate(Main.getPrimaryStage());
 
     @FXML
     private void handleProfile() {
@@ -73,7 +73,7 @@ public class LibraryCustomerController {
             stage.centerOnScreen();
 
             // Tạo Command để chuyển đổi cảnh
-            Command switchToLoginScene = new ConcreteCommand(new NavigationSystem(stage), loginScene);
+            Command switchToLoginScene = new ConcreteCommand(new Navigate(stage), loginScene);
 
             // Thực thi Command
             switchToLoginScene.execute();

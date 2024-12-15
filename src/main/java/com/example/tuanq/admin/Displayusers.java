@@ -175,4 +175,10 @@ public class Displayusers {
         int endIndex = Math.min(startIndex + rowsPerPage, allUsers.size());
         table.setItems(FXCollections.observableArrayList(allUsers.subList(startIndex, endIndex)));
     }
+
+    public void reloadUsers() {
+        allUsers.clear();
+        loadUsersFromDatabase();
+        calculateTotalPages();
+    }
 }

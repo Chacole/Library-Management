@@ -3,16 +3,16 @@ package com.example.tuanq.designpattern.Command;
 import javafx.scene.Scene;
 
 public class ConcreteCommand implements Command {
-    private NavigationSystem navigationSystem;
+    private Navigate navigate;
     private Scene targetScene;
 
-    public ConcreteCommand(NavigationSystem navigationSystem, Scene targetScene) {
-        this.navigationSystem = navigationSystem;
+    public ConcreteCommand(Navigate navigate, Scene targetScene) {
+        this.navigate = navigate;
         this.targetScene = targetScene;
     }
 
     @Override
     public void execute() {
-        navigationSystem.switchToScene(targetScene);
+        navigate.switchToScene(targetScene);
     }
 }

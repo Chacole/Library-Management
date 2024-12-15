@@ -19,6 +19,12 @@ public class toolsUsers {
     @FXML
     private Button buttonUpdate;
 
+    private Displayusers displayUsersController;
+
+    public void setDisplayDocumentsController(Displayusers displayUsersController) {
+        this.displayUsersController = displayUsersController;
+    }
+
     @FXML
     private void handleButtonPlus() throws IOException {
         // Tạo Dialog
@@ -118,6 +124,7 @@ public class toolsUsers {
             if (rowsAdded > 0) {
                 alert.setHeaderText("Success");
                 alert.setContentText("user added successfully.");
+                displayUsersController.reloadUsers();
 
             } else {
                 alert.setAlertType(Alert.AlertType.ERROR);
@@ -151,6 +158,7 @@ public class toolsUsers {
 
                 UserUtil userutil = new UserUtil();
                 userutil.delete(userToDelete);
+                displayUsersController.reloadUsers();
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Error: " + e.getMessage());
@@ -274,6 +282,7 @@ public class toolsUsers {
             if (rowsUpdated > 0) {
                 alert.setHeaderText("Success");
                 alert.setContentText("User updated successfully.");
+                displayUsersController.reloadUsers();
             } else {
                 alert.setAlertType(Alert.AlertType.ERROR);
                 alert.setHeaderText("Failed");

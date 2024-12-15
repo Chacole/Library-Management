@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import org.controlsfx.control.Rating?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="500.0" prefWidth="574.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.tuanq.admin.DocumentReviewController">
+    <children>
+        <!-- Ảnh QR -->
+        <ImageView fx:id="imageView" fitHeight="148.0" fitWidth="160.0" layoutX="14.0" layoutY="14.0" preserveRatio="true" smooth="true"> </ImageView>
+        <Rating fx:id="rating" layoutX="385.0" layoutY="107.0" />
+
+        <Label fx:id="msg" layoutX="170.0" layoutY="168.0" prefHeight="15.0" prefWidth="100.0" />
+        <TextArea fx:id="commentArea" layoutX="10.0" layoutY="239.0" prefHeight="80.0" prefWidth="555.0" promptText="Viết bình luận" />
+        <Button layoutX="244.0" layoutY="319.0" onAction="#handleSubmit" text="Gửi Đánh Giá" />
+
+        <!-- Bảng hiển thị các đánh giá -->
+        <TableView fx:id="tableView" layoutY="363.0" prefHeight="137.0" prefWidth="574.0">
+            <columns>
+                <TableColumn fx:id="usernameColumn" prefWidth="135.0" text="UserName" />
+                <TableColumn fx:id="commentColumn" prefWidth="436.0" text="Comment" />
+                <TableColumn fx:id="deleteColumn" prefWidth="75.0" />
+            </columns>
+        </TableView>
+    </children>
+</AnchorPane>

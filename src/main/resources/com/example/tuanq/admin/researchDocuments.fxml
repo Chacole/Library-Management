@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.tuanq.admin.DisplaydocumentsResearch">
+    <center>
+        <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" vbarPolicy="NEVER">
+            <!-- Nội dung hiển thị sẽ được thêm vào mã Java -->
+        </ScrollPane>
+    </center>
+</BorderPane>
